@@ -1,0 +1,57 @@
+<canvas id="myCanvas" width="500" height="500"></canvas>
+<script>
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+
+    // Load images
+    var background = new Image();
+    background.src = 'media/graphics/sprites/ingame/island.png';  // Background or other images
+    var img = new Image();
+    img.src = 'media/graphics/sprites/ui/control.png';  // Image to animate transparency
+
+    var alpha = 0.0;  // Start with fully transparent
+    var fadeSpeed = 0.01;  // Speed of alpha change (adjust for faster/slower)
+
+    // Variable to switch between fade-in and fade-out
+    var fadeIn = true;
+
+    // Function to animate the canvas
+    function animate() {
+        // Clear the entire canvas before redrawing
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the background image (no transparency)
+        context.globalAlpha = 1.0;  // Ensure background is opaque
+        context.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+        // Animate the alpha of the image
+        context.globalAlpha = alpha;  // Apply current alpha value
+        context.drawImage(img, 100, 100, 200, 200);  // Adjust position and size as needed
+
+        // Adjust alpha value for fade-in or fade-out
+        if (fadeIn) {
+            alpha += fadeSpeed;  // Fade in by increasing alpha
+            if (alpha >= 1.0) {  // Fully visible, start fading out
+                fadeIn = false;
+            }
+        } else {
+            alpha -= fadeSpeed;  // Fade out by decreasing alpha
+            if (alpha <= 0.0) {  // Fully transparent, start fading in
+                fadeIn = true;
+            }
+        }
+
+        // Reset the global alpha to 1.0 for any future drawings
+        context.globalAlpha = 1.0;
+
+        // Request the next frame for the animation
+        requestAnimationFrame(animate);
+    }
+
+    // Start animation once the images are loaded
+    background.onload = function() {
+        img.onload = function() {
+            animate();
+        };
+    };
+</script>
